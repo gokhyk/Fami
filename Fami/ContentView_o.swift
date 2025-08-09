@@ -5,22 +5,22 @@ import SwiftUI
 
 // MARK: - Models
 
-struct ToDoItem: Identifiable {
-    var id = UUID().uuidString
-    var taskName: String
-    var assignedTo: String
-    var dueDate: Date?
-    var isCompleted: Bool
-    var completedAt: Date?
-    var createdAt: Date
-    var familyID: String
-    var notes: String?
-}
-
-struct Family: Identifiable {
-    var id: String
-    var name: String
-}
+//struct ToDoItem: Identifiable {
+//    var id = UUID().uuidString
+//    var taskName: String
+//    var assignedTo: String
+//    var dueDate: Date?
+//    var isCompleted: Bool
+//    var completedAt: Date?
+//    var createdAt: Date
+//    var familyID: String
+//    var notes: String?
+//}
+//
+//struct Family: Identifiable {
+//    var id: String
+//    var name: String
+//}
 
 enum TaskFilter: String, CaseIterable, Identifiable {
     case all = "All"
@@ -32,32 +32,32 @@ enum TaskFilter: String, CaseIterable, Identifiable {
 
 // MARK: - ViewModel
 
-class TaskViewModel: ObservableObject {
-    @Published var tasks: [ToDoItem] = []
-    @Published var filterStatus: TaskFilter = .all
-    @Published var activeFamilyID: String?
-    
-    var filteredTasks: [ToDoItem] {
-        switch filterStatus {
-        case .all:
-            return tasks
-        case .incomplete:
-            return tasks.filter { !$0.isCompleted }
-        case .completed:
-            return tasks.filter { $0.isCompleted }
-        }
-    }
-
-    func toggleComplete(_ task: ToDoItem) {
-        guard let index = tasks.firstIndex(where: { $0.id == task.id }) else { return }
-        tasks[index].isCompleted.toggle()
-        tasks[index].completedAt = tasks[index].isCompleted ? Date() : nil
-    }
-
-    func addTask(_ task: ToDoItem) {
-        tasks.append(task)
-    }
-}
+//class TaskViewModel: ObservableObject {
+//    @Published var tasks: [ToDoItem] = []
+//    @Published var filterStatus: TaskFilter = .all
+//    @Published var activeFamilyID: String?
+//    
+//    var filteredTasks: [ToDoItem] {
+//        switch filterStatus {
+//        case .all:
+//            return tasks
+//        case .incomplete:
+//            return tasks.filter { !$0.isCompleted }
+//        case .completed:
+//            return tasks.filter { $0.isCompleted }
+//        }
+//    }
+//
+//    func toggleComplete(_ task: ToDoItem) {
+//        guard let index = tasks.firstIndex(where: { $0.id == task.id }) else { return }
+//        tasks[index].isCompleted.toggle()
+//        tasks[index].completedAt = tasks[index].isCompleted ? Date() : nil
+//    }
+//
+//    func addTask(_ task: ToDoItem) {
+//        tasks.append(task)
+//    }
+//}
 
 // MARK: - Views
 
@@ -86,9 +86,50 @@ struct TaskRowView: View {
     }
 }
 
+//struct TaskListView: View {
+//    @ObservedObject var viewModel: TaskViewModel
+//    @State private var showNewTask = false
+//
+//    var body: some View {
+//        NavigationView {
+//            VStack {
+//                Picker("Filter", selection: $viewModel.filterStatus) {
+//                    ForEach(TaskFilter.allCases) { filter in
+//                        Text(filter.rawValue).tag(filter)
+//                    }
+//                }
+//                .pickerStyle(SegmentedPickerStyle())
+//                .padding(.horizontal)
+//
+//                List(viewModel.filteredTasks) { task in
+//                    TaskRowView(task: task) {
+//                        viewModel.toggleComplete(task)
+//                    }
+//                }
+//            }
+//            .navigationTitle("My Tasks")
+//            .toolbar {
+//                ToolbarItem(placement: .navigationBarTrailing) {
+//                    Button(action: { showNewTask = true }) {
+//                        Image(systemName: "plus.circle.fill")
+//                    }
+//                }
+//            }
+//            .sheet(isPresented: $showNewTask) {
+//                NewTaskView { newTask in
+//                    viewModel.addTask(newTask)
+//                    showNewTask = false
+//                }
+//            }
+//        }
+//    }
+//}
+
+
+
 struct TaskListView: View {
     @ObservedObject var viewModel: TaskViewModel
-    @State private var showNewTask = false
+    @State private var showNewTaskView = false
 
     var body: some View {
         NavigationView {
@@ -99,31 +140,39 @@ struct TaskListView: View {
                     }
                 }
                 .pickerStyle(SegmentedPickerStyle())
-                .padding(.horizontal)
+                .padding()
 
                 List(viewModel.filteredTasks) { task in
                     TaskRowView(task: task) {
-                        viewModel.toggleComplete(task)
+                        Task {
+                            await viewModel.toggleComplete(task)
+                        }
                     }
                 }
             }
-            .navigationTitle("My Tasks")
+            .navigationTitle("Family Tasks")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { showNewTask = true }) {
+                    Button(action: { showNewTaskView = true }) {
                         Image(systemName: "plus.circle.fill")
                     }
                 }
             }
-            .sheet(isPresented: $showNewTask) {
+            .sheet(isPresented: $showNewTaskView) {
                 NewTaskView { newTask in
-                    viewModel.addTask(newTask)
-                    showNewTask = false
+                    Task {
+                        await viewModel.addTask(newTask)
+                        showNewTaskView = false
+                    }
                 }
+            }
+            .task {
+                await viewModel.loadTasks()
             }
         }
     }
 }
+
 
 struct NewTaskView: View {
     @Environment(\.dismiss) var dismiss
@@ -161,9 +210,7 @@ struct NewTaskView: View {
                     }
                 }
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss()
-                        //onSave(ToDoItem(taskName: "", assignedTo: "", dueDate: nil, isCompleted: false, notes: nil, createdAt: Date()))
-                    }
+                    Button("Cancel") { dismiss() }
                 }
             }
         }
