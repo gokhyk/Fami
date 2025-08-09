@@ -13,6 +13,7 @@
 		940B9E652E467E6000247930 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 940B9E642E467E6000247930 /* FirebaseCore */; };
 		940B9E672E467E6000247930 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 940B9E662E467E6000247930 /* FirebaseDatabase */; };
 		940B9E692E467E6000247930 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 940B9E682E467E6000247930 /* FirebaseFirestore */; };
+		941D2E3D2E46D8F80033C107 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 941D2E3C2E46D8F80033C107 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +35,7 @@
 
 /* Begin PBXFileReference section */
 		940B9E432E4679D700247930 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		941D2E3C2E46D8F80033C107 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		94C034322E416C6800AE8060 /* Fami.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fami.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94C0343F2E416C6900AE8060 /* FamiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FamiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		94C034492E416C6900AE8060 /* FamiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FamiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -90,6 +92,7 @@
 		94C034292E416C6800AE8060 = {
 			isa = PBXGroup;
 			children = (
+				941D2E3C2E46D8F80033C107 /* GoogleService-Info.plist */,
 				940B9E432E4679D700247930 /* GoogleService-Info.plist */,
 				94C034342E416C6800AE8060 /* Fami */,
 				94C034422E416C6900AE8060 /* FamiTests */,
@@ -236,6 +239,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				941D2E3D2E46D8F80033C107 /* GoogleService-Info.plist in Resources */,
 				940B9E442E4679D700247930 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
