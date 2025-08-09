@@ -11,11 +11,12 @@ struct RootRouter: View {
                 SignInView(auth: auth)
             } else {
                 TaskListView(viewModel: tasks)
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarLeading) {
-                            Button("Sign Out") { auth.signOut() }
-                        }
-                    }
+                    .environmentObject(auth)
+//                    .toolbar {
+//                        ToolbarItem(placement: .navigationBarLeading) {
+//                            Button("Sign Out") { auth.signOut() }
+//                        }
+//                    }
             }
         }
     }

@@ -17,6 +17,7 @@ struct FamiApp: App {
 
         return WindowGroup {
             RootRouter(auth: authVM, tasks: taskVM)
+                .environmentObject(authVM)
         }
     }
 }
