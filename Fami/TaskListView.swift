@@ -6,7 +6,12 @@ struct TaskListView: View {
     @EnvironmentObject var auth: AuthViewModel
     @State private var showNewTaskView = false
     @State private var showFamilyMgmt = false
+    @State private var showInvites = false
 
+    private func invitationVM() -> InvitationViewModel {
+        InvitationViewModel(repo: FirestoreInvitationRepository(), auth: auth)
+    }
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -36,13 +41,32 @@ struct TaskListView: View {
                 }
                 .listStyle(.insetGrouped)
             }
-            .navigationTitle("Family Tasks")
+            //.navigationTitle("Family Tasks")
+            //.navigationTitle("Tasks – \(auth.user?.email ?? "Unknown") (\(viewModel.activeFamilyName.isEmpty ? "No Family" : viewModel.activeFamilyName)")
+            //TODO - make it look better
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    VStack(spacing: 2) {
+                        Text(auth.user?.email ?? "Unknown")
+                            .font(.subheadline)   // smaller
+                            .foregroundColor(.secondary)
+                        Text(viewModel.activeFamilyName.isEmpty ? "No Family" : viewModel.activeFamilyName)
+                            .font(.caption)       // even smaller
+                            .foregroundColor(.gray)
+                    }
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Sign Out") {auth.signOut() }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     HStack(spacing: 16) {
+                        Button {
+                            showInvites = true
+                        } label: {
+                            Image(systemName: "envelope.badge")
+                        }
                         Button {
                             showFamilyMgmt = true
                         } label: {
@@ -71,9 +95,16 @@ struct TaskListView: View {
                     .environmentObject(viewModel)
                     .environmentObject(auth)
             }
+            .sheet(isPresented: $showInvites) {
+                InvitationsInboxView(invitations: invitationVM())
+            }
             .task {
                 await viewModel.loadTasks()
             }
+            .onChange(of: viewModel.activeFamilyId) { _ in
+                Task { await viewModel.loadTasks() }   // reload when family changes
+            }
         }
+        
     }
 }

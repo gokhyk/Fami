@@ -6,6 +6,7 @@ final class TaskViewModel: ObservableObject {
     @Published var tasks: [ToDoItem] = []
     @Published var filter: FilterType = .all
     @Published var activeFamilyId: String?
+    @Published var activeFamilyName: String = ""  
 
     enum FilterType: String, CaseIterable, Identifiable {
         case all = "All"
@@ -19,6 +20,16 @@ final class TaskViewModel: ObservableObject {
     init(repository: TaskRepository) {
         self.repository = repository
     }
+
+    func setActiveFamily(id: String, name: String? = nil) {
+        activeFamilyId = id
+        if let name { self.activeFamilyName = name }
+        Task {
+            //await refreshActiveFamilyNameIfNeeded()
+            await loadTasks()
+        }
+    }
+
 
     var filteredTasks: [ToDoItem] {
         tasks.filter { task in

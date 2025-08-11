@@ -20,6 +20,7 @@ protocol AuthProviding {
 final class AuthService: AuthProviding {
     var currentUser: AppUser? {
         if let u = Auth.auth().currentUser {
+            //print(u.uid, u.email, u.displayName)
             return AppUser(uid: u.uid, email: u.email, displayName: u.displayName)
         }
         return nil

@@ -13,11 +13,12 @@ struct FamiApp: App {
         let authVM = AuthViewModel(service: AuthService())
         let taskRepo = FirestoreTaskRepository()
         let taskVM = TaskViewModel(repository: taskRepo)
-        taskVM.activeFamilyId = "family1" // TODO: load from user's profile
+
 
         return WindowGroup {
             RootRouter(auth: authVM, tasks: taskVM)
                 .environmentObject(authVM)
         }
+
     }
 }

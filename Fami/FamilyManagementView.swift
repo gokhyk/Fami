@@ -18,6 +18,14 @@ struct FamilyManagementView: View {
     @State private var families: [Family] = []
     @State private var showCreateAlert = false
     @State private var newFamilyName = ""
+    
+    @State private var showInvite = false
+    @State private var selectedFamilyId: String?
+    @State private var selectedFamilyName: String = ""
+    
+    private func invitationVM() -> InvitationViewModel {
+        InvitationViewModel(repo: FirestoreInvitationRepository(), auth: auth)
+    }
 
     var body: some View {
         NavigationView {
@@ -34,12 +42,25 @@ struct FamilyManagementView: View {
                         }
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            tasks.activeFamilyId = fam.id
-                            Task { await tasks.loadTasks() }
+                            // On family row tap:
+                            tasks.setActiveFamily(id: fam.id, name: fam.name)
+                            if let uid = auth.user?.uid {
+                                Task { await auth.saveActiveFamily(uid: uid, id: fam.id, name: fam.name) }
+                            }
+                        }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button {
+                                selectedFamilyName = fam.name
+                                selectedFamilyId = fam.id
+                                showInvite = true
+                            } label: {
+                                Label("Invite", systemImage: "envelope.badge")
+                            }
                         }
                     }
                 }
             }
+
             .navigationTitle("Families")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -61,6 +82,17 @@ struct FamilyManagementView: View {
                 Button("Cancel", role: .cancel) { }
             } message: {
                 Text("Enter a name for your new family.")
+            }
+            .sheet(isPresented: $showInvite) {
+                if let fid = selectedFamilyId {
+                    InviteMemberView(
+                        invitations: invitationVM(),
+                        familyId: fid,
+                        familyName: selectedFamilyName
+                        )
+                } else {
+                    Text("No family selected")
+                }
             }
         }
     }
