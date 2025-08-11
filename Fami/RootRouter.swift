@@ -13,7 +13,7 @@ struct RootRouter: View {
                 
                 TaskListView(viewModel: tasks)
                     .environmentObject(auth)
-                    .onChange(of: auth.activeFamilyId) { fid in     // 👈 update when profile loads
+                    .onChange(of: auth.activeFamilyId) { _, fid in     // 👈 update when profile loads
                         guard let fid else { return }
                         tasks.setActiveFamily(id: fid, name: auth.activeFamilyName)
                     }

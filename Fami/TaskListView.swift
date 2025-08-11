@@ -101,7 +101,7 @@ struct TaskListView: View {
             .task {
                 await viewModel.loadTasks()
             }
-            .onChange(of: viewModel.activeFamilyId) { _ in
+            .onChange(of: viewModel.activeFamilyId) { 
                 Task { await viewModel.loadTasks() }   // reload when family changes
             }
         }

@@ -7,11 +7,11 @@ struct InvitationsInboxView: View {
     var body: some View {
         NavigationView {
             Group {
-                if invitations.invites.isEmpty {
+                if invitations.pendingInvitations.isEmpty {
                     ContentUnavailableView("No Invitations", systemImage: "envelope.badge", description: Text("You're all caught up."))
                 } else {
                     List {
-                        ForEach(invitations.invites) { inv in
+                        ForEach(invitations.pendingInvitations) { inv in
                             VStack(alignment: .leading, spacing: 6) {
                                 Text(inv.familyName).font(.headline)
                                 Text("Status: \(inv.status)").font(.caption2).foregroundColor(.secondary)

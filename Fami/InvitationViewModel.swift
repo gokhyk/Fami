@@ -4,10 +4,16 @@ import Foundation
 @MainActor
 final class InvitationViewModel: ObservableObject {
     @Published var invites: [Invitation] = []
+
     @Published var errorMessage: String?
 
     private let repo: InvitationRepository
     private let auth: AuthViewModel
+    
+    var pendingInvitations: [Invitation] {
+        invites.filter { $0.status.lowercased() == "pending" }
+    }
+
 
     init(repo: InvitationRepository, auth: AuthViewModel) {
         self.repo = repo
